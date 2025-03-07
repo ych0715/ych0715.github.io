@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>筆電推薦系統</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f2f2f2;
+            margin: 20px;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+        .container {
+            width: 100%;
+            max-width: 800px;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            box-sizing: border-box;
+        }
+        h1 {
+            color: #333333;
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        label {
+            font-weight: bold;
+            margin-top: 10px;
+            display: block;
+        }
+        select, input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #cccccc;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+        select:focus, input[type="submit"]:hover {
+            border-color: #666666;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+        }
+        @media (max-width: 600px) {
+            .container {
+                width: 100%;
+                padding: 10px;
+            }
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            animation: fadeIn 0.5s;
+        }
+        table, th, td {
+            border: 1px solid #cccccc;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            color: #333333;
+        }
+        th {
+            background-color: #f9f9f9;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+     <script>
+        // 假設這是從資料庫獲取的筆電資料
+        const laptops = [
+        { 型號: "Flow X16(RTX4070) ", 品牌: "ASUS", size: 16, CPU廠家: "INTEL", 價格: 76999, GPU廠家: "Nvidia", 記憶體: 32, 類型: "電競", 儲存容量: "1000" },
+        { 型號: "F15(RTX4060)", 品牌: "ASUS", size: 15.6, CPU廠家: "INTEL", 價格: 41499, GPU廠家: "Nvidia", 記憶體: 16, 類型: "電競", 儲存容量: "512" },
+        { 型號: "F17(RTX4060)", 品牌: "ASUS", size: 17.3, CPU廠家: "INTEL", 價格: 42499, GPU廠家: "Nvidia", 記憶體: 16, 類型: "電競", 儲存容量: "1000" },
+        { 型號: "F15(RTX3050+I5-12500H)", 品牌: "ASUS", size: 15.6, CPU廠家: "INTEL", 價格: 25999, GPU廠家: "Nvidia", 記憶體: 8, 類型: "電競", 儲存容量: "512" },
+        { 型號: "F15(RTX3050+I7-12700H)", 品牌: "ASUS", size: 15.6, CPU廠家: "INTEL", 價格: 29999, GPU廠家: "Nvidia", 記憶體: 16, 類型: "電競", 儲存容量: "512" },
+        { 型號: "F15(RTX4050+I7-13620H)", 品牌: "ASUS", size: 15.6, CPU廠家: "INTEL", 價格: 35999, GPU廠家: "Nvidia", 記憶體: 16, 類型: "電競", 儲存容量: "512" },
+        { 型號: "F17(RTX3050+I5-12500H)", 品牌: "ASUS", size: 17.3, CPU廠家: "INTEL", 價格: 26999, GPU廠家: "Nvidia", 記憶體: 16, 類型: "電競", 儲存容量: "512" },
+        { 型號: "F16(RTX4070+I7-13650HX)", 品牌: "ASUS", size: 16, CPU廠家: "INTEL", 價格: 47999, GPU廠家: "Nvidia", 記憶體: 16, 類型: "電競", 儲存容量: "1000" },
+        { 型號: "A15(RTX2050+R5-7535HS)", 品牌: "ASUS", size: 15.6, CPU廠家: "AMD", 價格: 21999, GPU廠家: "Nvidia", 記憶體: 8, 類型: "電競", 儲存容量: "512" },
+        { 型號: "A17(RTX2050+R5-7535HS)", 品牌: "ASUS", size: 17.3, CPU廠家: "AMD", 價格: 22999, GPU廠家: "Nvidia", 記憶體: 8, 類型: "電競", 儲存容量: "512" },
+        { 型號: "A15(RTX3050+R5-7535HS)", 品牌: "ASUS", size: 15.6, CPU廠家: "AMD", 價格: 24999, GPU廠家: "Nvidia", 記憶體: 16, 類型: "電競", 儲存容量: "1000" },
+        { 型號: "A15(RTX4060+R5-7535HS)", 品牌: "ASUS", size: 15.6, CPU廠家: "AMD", 價格: 35499, GPU廠家: "Nvidia", 記憶體: 32, 類型: "電競", 儲存容量: "512" },
+        { 型號: "A16(RX7700S+R7-7435HS)", 品牌: "ASUS", size: 16, CPU廠家: "AMD", 價格: 36199, GPU廠家: "AMD", 記憶體: 32, 類型: "電競", 儲存容量: "512" }, 
+        { 型號: "A15(RTX4060+R5-7535HS)", 品牌: "ASUS", size: 15.6, CPU廠家: "AMD", 價格: 32499, GPU廠家: "Nvidia", 記憶體: 16, 類型: "電競", 儲存容量: "512" },
+        { 型號: "A15(RTX4050+R5-7535HS)", 品牌: "ASUS", size: 15.6, CPU廠家: "AMD", 價格: 27999, GPU廠家: "Nvidia", 記憶體: 16, 類型: "電競", 儲存容量: "512" },
+        { 型號: "Strix G18(RTX4060+i9-14900HX)", 品牌: "ASUS", size: 18, CPU廠家: "INTEL", 價格: 60999, GPU廠家: "Nvidia", 記憶體: 16, 類型: "電競", 儲存容量: "1000" },
+        { 型號: "Strix G16(RTX4060+i9-14900HX)", 品牌: "ASUS", size: 16, CPU廠家: "INTEL", 價格: 58999, GPU廠家: "Nvidia", 記憶體: 16, 類型: "電競", 儲存容量: "1000" },
+        { 型號: "Strix G16(RTX4060+i9-13980HX)", 品牌: "ASUS", size: 16, CPU廠家: "INTEL", 價格: 53999, GPU廠家: "Nvidia", 記憶體: 16, 類型: "電競", 儲存容量: "1000" },
+        { 型號: "Strix SCAR 18(RTX5080+Ultra 9 275HX)", 品牌: "ASUS", size: 18, CPU廠家: "INTEL", 價格: 105999, GPU廠家: "Nvidia", 記憶體: 32, 類型: "電競", 儲存容量: "1000" }, 
+        { 型號: "Strix SCAR 16(RTX5080+Ultra 9 275HX)", 品牌: "ASUS", size: 16, CPU廠家: "INTEL", 價格: 103999, GPU廠家: "Nvidia", 記憶體: 32, 類型: "電競", 儲存容量: "1000" },
+        { 型號: "Strix SCAR 18(RTX5090+Ultra 9 275HX)", 品牌: "ASUS", size: 16, CPU廠家: "INTEL", 價格: 139999, GPU廠家: "Nvidia", 記憶體: 32, 類型: "電競", 儲存容量: "2000" },
+        { 型號: "Zephyrus G14(RTX4060+R9-8945HS)", 品牌: "ASUS", size: 14, CPU廠家: "AMD", 價格: 59999, GPU廠家: "Nvidia", 記憶體: 32, 類型: "電競", 儲存容量: "1000" },
+        { 型號: "Zephyrus G14(RTX4060+AI 9 HX370)", 品牌: "ASUS", size: 14, CPU廠家: "AMD", 價格: 69999, GPU廠家: "Nvidia", 記憶體: 32, 類型: "電競", 儲存容量: "1000" },
+        { 型號: "Zephyrus G16(RTX5080+Ultra 9 285H)", 品牌: "ASUS", size: 16, CPU廠家: "INTEL", 價格: 109999, GPU廠家: "Nvidia", 記憶體: 64, 類型: "電競", 儲存容量: "1000" },
+        { 型號: "Zephyrus G16(RTX5090+Ultra 9 285H)", 品牌: "ASUS", size: 16, CPU廠家: "INTEL", 價格: 139999, GPU廠家: "Nvidia", 記憶體: 64, 類型: "電競", 儲存容量: "1000" },
+        { 型號: "Vivobook Go 12", 品牌: "ASUS", size: 11.6  , CPU廠家: "INTEL", 價格: 6999, GPU廠家: "INTEL", 記憶體: 4, 類型: "輕薄", 儲存容量: "64" },
+        { 型號: "Vivobook Go 14(N4500)", 品牌: "ASUS", size: 14  , CPU廠家: "INTEL", 價格: 8111, GPU廠家: "INTEL", 記憶體: 4, 類型: "輕薄", 儲存容量: "128" },
+        { 型號: "Vivobook Go 14(N100)", 品牌: "ASUS", size: 14  , CPU廠家: "INTEL", 價格: 11999, GPU廠家: "INTEL", 記憶體: 8, 類型: "輕薄", 儲存容量: "256" },
+        { 型號: "Vivobook Go 15 OLED", 品牌: "ASUS", size: 15.6  , CPU廠家: "AMD", 價格: 19999, GPU廠家: "AMD", 記憶體: 16, 類型: "輕薄", 儲存容量: "512" },
+        { 型號: "Vivobook Go 15", 品牌: "ASUS", size: 15.6  , CPU廠家: "INTEL", 價格: 9688, GPU廠家: "INTEL", 記憶體: 8, 類型: "輕薄", 儲存容量: "128" },
+        { 型號: "Vivobook 14 Flip", 品牌: "ASUS", size: 14  , CPU廠家: "INTEL", 價格: 39999, GPU廠家: "INTEL", 記憶體: 16, 類型: "輕薄", 儲存容量: "1000" },
+        { 型號: "Vivobook 14(I5-1335U)", 品牌: "ASUS", size: 14, CPU廠家: "INTEL", 價格: 17999, GPU廠家: "INTEL", 記憶體: 8, 類型: "一般", 儲存容量: "512" },
+        { 型號: "Vivobook 14(I5-1334U)", 品牌: "ASUS", size: 14, CPU廠家: "INTEL", 價格: 17999, GPU廠家: "INTEL", 記憶體: 8, 類型: "一般", 儲存容量: "512" },
+        { 型號: "Vivobook 14(I5-13500H)", 品牌: "ASUS", size: 14, CPU廠家: "INTEL", 價格: 19999, GPU廠家: "INTEL", 記憶體: 8, 類型: "一般", 儲存容量: "512" },
+        { 型號: "Vivobook 14(I5-13420H)", 品牌: "ASUS", size: 14, CPU廠家: "INTEL", 價格: 19999, GPU廠家: "INTEL", 記憶體: 8, 類型: "一般", 儲存容量: "512" },
+        { 型號: "Vivobook 15(N4500)", 品牌: "ASUS", size: 15.6, CPU廠家: "INTEL", 價格: 12111, GPU廠家: "INTEL", 記憶體: 8, 類型: "一般", 儲存容量: "512" },
+        { 型號: "Vivobook 15(N6000) ", 品牌: "ASUS", size: 15.6, CPU廠家: "INTEL", 價格: 14900, GPU廠家: "INTEL", 記憶體: 8, 類型: "一般", 儲存容量: "512" },
+        { 型號: "Vivobook 15(I5-12500H)", 品牌: "ASUS", size: 15.6, CPU廠家: "INTEL", 價格: 18999, GPU廠家: "INTEL", 記憶體: 8, 類型: "一般", 儲存容量: "512" },
+        { 型號: "Vivobook 15(I5-13420H)", 品牌: "ASUS", size: 15.6, CPU廠家: "INTEL", 價格: 20999, GPU廠家: "INTEL", 記憶體: 8, 類型: "一般", 儲存容量: "512" },
+        { 型號: "Vivobook 15(I7-13620H)", 品牌: "ASUS", size: 15.6, CPU廠家: "INTEL", 價格: 23999, GPU廠家: "INTEL", 記憶體: 16, 類型: "一般", 儲存容量: "512" },
+        { 型號: "Vivobook 15(I5-1335U)", 品牌: "ASUS", size: 15.6, CPU廠家: "INTEL", 價格: 18999, GPU廠家: "INTEL", 記憶體: 8, 類型: "一般", 儲存容量: "512" },
+        { 型號: "Vivobook 15(I5-120U)", 品牌: "ASUS", size: 15.6, CPU廠家: "INTEL", 價格: 21999, GPU廠家: "INTEL", 記憶體: 8, 類型: "一般", 儲存容量: "512" },
+        { 型號: "Vivobook 15(I7-1355U)", 品牌: "ASUS", size: 15.6, CPU廠家: "INTEL", 價格: 22999, GPU廠家: "INTEL", 記憶體: 16, 類型: "一般", 儲存容量: "1000" },
+        { 型號: "Vivobook 15 OLED(I5-13500H)", 品牌: "ASUS", size: 15.6, CPU廠家: "INTEL", 價格: 23999, GPU廠家: "INTEL", 記憶體: 8, 類型: "一般", 儲存容量: "512" },
+        { 型號: "Vivobook 15 OLED(I5-13420H)", 品牌: "ASUS", size: 15.6, CPU廠家: "INTEL", 價格: 23999, GPU廠家: "INTEL", 記憶體: 8, 類型: "一般", 儲存容量: "512" },
+        { 型號: "Vivobook 16(I5-13500H)", 品牌: "ASUS", size: 16, CPU廠家: "INTEL", 價格: 22999, GPU廠家: "INTEL", 記憶體: 8, 類型: "一般", 儲存容量: "512" },
+        { 型號: "Vivobook 16(I7-1370H)", 品牌: "ASUS", size: 16, CPU廠家: "INTEL", 價格: 26999, GPU廠家: "INTEL", 記憶體: 8, 類型: "一般", 儲存容量: "512" },
+        { 型號: "Vivobook 17(I5-1335U)", 品牌: "ASUS", size: 17.3, CPU廠家: "INTEL", 價格: 21900, GPU廠家: "INTEL", 記憶體: 8, 類型: "一般", 儲存容量: "512" },
+        { 型號: "Vivobook 17(PENTIUM 8505)", 品牌: "ASUS", size: 17.3, CPU廠家: "INTEL", 價格: 17900, GPU廠家: "INTEL", 記憶體: 8, 類型: "一般", 儲存容量: "512" },
+        { 型號: "Vivobook 17(R5-7430U)", 品牌: "ASUS", size: 17.3, CPU廠家: "AMD", 價格: 21900, GPU廠家: "AMD", 記憶體: 8, 類型: "一般", 儲存容量: "512" },
+        { 型號: "Vivobook 16X(RTX4060+I7-12700H)", 品牌: "ASUS", size: 16, CPU廠家: "INTEL", 價格: 32999, GPU廠家: "NVIDIA", 記憶體: 16, 類型: "一般", 儲存容量: "512" },
+        { 型號: "Vivobook 16X(RTX3050+I7-12700H)", 品牌: "ASUS", size: 16, CPU廠家: "INTEL", 價格: 27999, GPU廠家: "NVIDIA", 記憶體: 16, 類型: "一般", 儲存容量: "512" },
+        { 型號: "Vivobook 16X(RTX4050+I5-12500H)", 品牌: "ASUS", size: 16, CPU廠家: "INTEL", 價格: 34900, GPU廠家: "NVIDIA", 記憶體: 16, 類型: "一般", 儲存容量: "1000" },
+        { 型號: "Vivobook 16X(RTX4050+I5-12500H)", 品牌: "ASUS", size: 16, CPU廠家: "INTEL", 價格: 29999, GPU廠家: "NVIDIA", 記憶體: 16, 類型: "一般", 儲存容量: "512" },
+        { 型號: "Vivobook 16X(RTX3050+I5-12500H)", 品牌: "ASUS", size: 16, CPU廠家: "INTEL", 價格: 25999, GPU廠家: "NVIDIA", 記憶體: 8, 類型: "一般", 儲存容量: "512" },
+        { 型號: "Vivobook 16X(RTX2050+I5-12500H)", 品牌: "ASUS", size: 16, CPU廠家: "INTEL", 價格: 23999, GPU廠家: "NVIDIA", 記憶體: 8, 類型: "一般", 儲存容量: "512" },
+        { 型號: "Vivobook 16X(RTX3050+I7-12700H)", 品牌: "ASUS", size: 16, CPU廠家: "INTEL", 價格: 28999, GPU廠家: "NVIDIA", 記憶體: 16, 類型: "一般", 儲存容量: "512" },
+        { 型號: "Vivobook 17X(I9-13900H)", 品牌: "ASUS", size: 17.3, CPU廠家: "INTEL", 價格: 29999, GPU廠家: "INTEL", 記憶體: 8, 類型: "一般", 儲存容量: "512" },
+        { 型號: "Vivobook 17X(I5-13500H)", 品牌: "ASUS", size: 17.3, CPU廠家: "INTEL", 價格: 25900, GPU廠家: "INTEL", 記憶體: 8, 類型: "一般", 儲存容量: "512" },
+        { 型號: "Vivobook S14 OLED(Ultra 5 125H)", 品牌: "ASUS", size: 14, CPU廠家: "INTEL", 價格: 29999, GPU廠家: "INTEL", 記憶體: 16, 類型: "輕薄", 儲存容量: "512" },
+        { 型號: "Vivobook S14 OLED(Ultra 7 258V)", 品牌: "ASUS", size: 14, CPU廠家: "INTEL", 價格: 45999, GPU廠家: "INTEL", 記憶體: 32, 類型: "輕薄", 儲存容量: "1000" },
+        { 型號: "Vivobook S14 OLED(Ultra 5 228V)", 品牌: "ASUS", size: 14, CPU廠家: "INTEL", 價格: 39999, GPU廠家: "INTEL", 記憶體: 32, 類型: "輕薄", 儲存容量: "1000" },
+        { 型號: "Vivobook S14 OLED(R5-7535HS)", 品牌: "ASUS", size: 14, CPU廠家: "INTEL", 價格: 39999, GPU廠家: "INTEL", 記憶體: 32, 類型: "輕薄", 儲存容量: "1000" },
+        { 型號: "Vivobook S14 OLED(Ultra 5 228V)", 品牌: "ASUS", size: 14, CPU廠家: "AMD", 價格: 26999, GPU廠家: "AMD", 記憶體: 16, 類型: "輕薄", 儲存容量: "512" },
+        { 型號: "Vivobook S14 OLED(AI 9 HX370)", 品牌: "ASUS", size: 14, CPU廠家: "AMD", 價格: 42900, GPU廠家: "AMD", 記憶體: 32, 類型: "輕薄", 儲存容量: "1000" },
+        { 型號: "Vivobook S15 OLED(I5-13500H)", 品牌: "ASUS", size: 15.6, CPU廠家: "INTEL", 價格: 25999, GPU廠家: "INTEL", 記憶體: 16, 類型: "輕薄", 儲存容量: "512" },
+        { 型號: "Vivobook S15 OLED(Snapdragon X Elite)", 品牌: "ASUS", size: 15.6, CPU廠家: "QUALCOMM", 價格: 44999, GPU廠家: "QUALCOMM", 記憶體: 32, 類型: "輕薄", 儲存容量: "1000" },
+        { 型號: "Vivobook S15 OLED(Snapdragon X Plus)", 品牌: "ASUS", size: 15.6, CPU廠家: "QUALCOMM", 價格: 37900, GPU廠家: "QUALCOMM", 記憶體: 16, 類型: "輕薄", 儲存容量: "1000" },
+        { 型號: "Vivobook S16 OLED(Ultra 9 185H)", 品牌: "ASUS", size: 16, CPU廠家: "INTEL", 價格: 43999, GPU廠家: "INTEL", 記憶體: 32, 類型: "輕薄", 儲存容量: "1000" },
+        { 型號: "Vivobook S16 OLED(Ultra 5 125H)", 品牌: "ASUS", size: 16, CPU廠家: "INTEL", 價格: 35999, GPU廠家: "INTEL", 記憶體: 16, 類型: "輕薄", 儲存容量: "1000" },
+        { 型號: "Vivobook S16 OLED(AI 9 HX370)", 品牌: "ASUS", size: 16, CPU廠家: "AMD", 價格: 46999, GPU廠家: "AMD", 記憶體: 32, 類型: "輕薄", 儲存容量: "1000" },
+        { 型號: "Vivobook Pro 15 OLED(RTX4050+Ultra 9 185H)", 品牌: "ASUS", size: 15.6, CPU廠家: "INTEL", 價格: 49900, GPU廠家: "NVIDIA", 記憶體: 16, 類型: "一般", 儲存容量: "1000" },
+        { 型號: "Vivobook Pro 15 OLED(RTX4060+Ultra 9 185H)", 品牌: "ASUS", size: 15.6, CPU廠家: "INTEL", 價格: 54900, GPU廠家: "NVIDIA", 記憶體: 16, 類型: "一般", 儲存容量: "1000" },
+        { 型號: "Vivobook Pro 15 OLED(RTX4050+Ultra 9 285H)", 品牌: "ASUS", size: 15.6, CPU廠家: "INTEL", 價格: 56999, GPU廠家: "NVIDIA", 記憶體: 24, 類型: "一般", 儲存容量: "2000" },
+        { 型號: "Zenbook 14 OLED(AI 5 340)", 品牌: "ASUS", size: 14, CPU廠家: "AMD", 價格: 34999, GPU廠家: "AMD", 記憶體: 16, 類型: "輕薄", 儲存容量: "1000" },
+        { 型號: "Zenbook 14 OLED(Snapdragon X X1 26 100)", 品牌: "ASUS", size: 14, CPU廠家: "QUALCOMM", 價格: 39999, GPU廠家: "QUALCOMM", 記憶體: 32, 類型: "輕薄", 儲存容量: "1000" },
+        { 型號: "Zenbook 14(I5-13500H)", 品牌: "ASUS", size: 14, CPU廠家: "INTEL", 價格: 28999, GPU廠家: "INTEL", 記憶體: 16, 類型: "輕薄", 儲存容量: "512" },
+        { 型號: "Zenbook 14(I7-13700H)", 品牌: "ASUS", size: 14, CPU廠家: "INTEL", 價格: 32999, GPU廠家: "INTEL", 記憶體: 16, 類型: "輕薄", 儲存容量: "512" },
+        { 型號: "Zenbook 14 OLED(I9-13900H)", 品牌: "ASUS", size: 14, CPU廠家: "INTEL", 價格: 39900, GPU廠家: "INTEL", 記憶體: 16, 類型: "輕薄", 儲存容量: "1000" },
+        { 型號: "Zenbook 14 OLED(Ultra 7 155H)", 品牌: "ASUS", size: 14, CPU廠家: "INTEL", 價格: 39999, GPU廠家: "INTEL", 記憶體: 32, 類型: "輕薄", 儲存容量: "1000" },
+        { 型號: "Zenbook 14 OLED(Ultra 5 125H)", 品牌: "ASUS", size: 14, CPU廠家: "INTEL", 價格: 33999, GPU廠家: "INTEL", 記憶體: 16, 類型: "輕薄", 儲存容量: "1000" },
+        { 型號: "Zenbook S 14 OLED(Ultra 5 226V)", 品牌: "ASUS", size: 14, CPU廠家: "INTEL", 價格: 49900, GPU廠家: "INTEL", 記憶體: 16, 類型: "輕薄", 儲存容量: "1000" },
+        { 型號: "Zenbook S 14 OLED(Ultra 7 258V)", 品牌: "ASUS", size: 14, CPU廠家: "INTEL", 價格: 54900, GPU廠家: "INTEL", 記憶體: 32, 類型: "輕薄", 儲存容量: "1000" },
+        { 型號: "Zenbook S 13 OLED(Ultra 5 125U)", 品牌: "ASUS", size: 13.3, CPU廠家: "INTEL", 價格: 36999, GPU廠家: "INTEL", 記憶體: 16, 類型: "輕薄", 儲存容量: "512" },
+        { 型號: "Zenbook S 16 OLED(Ultra 7 258V)", 品牌: "ASUS", size: 16, CPU廠家: "INTEL", 價格: 57999, GPU廠家: "INTEL", 記憶體: 32, 類型: "輕薄", 儲存容量: "1000" },
+        { 型號: "Zenbook Duo OLED(Ultra 9 185H)", 品牌: "ASUS", size: 14, CPU廠家: "INTEL", 價格: 59999, GPU廠家: "INTEL", 記憶體: 32, 類型: "輕薄", 儲存容量: "1000" },
+        { 型號: "ProArt PX13(RTX4060+AI 9 HX 370)", 品牌: "ASUS", size: 13.3, CPU廠家: "AMD", 價格: 74900, GPU廠家: "NVIDIA", 記憶體: 32, 類型: "創作", 儲存容量: "1000" },
+        { 型號: "ProArt PZ13(SnapdragonX Plus X1P 42 100) ", 品牌: "ASUS", size: 13.3, CPU廠家: "QUALCOMM", 價格: 46900, GPU廠家: "QUALCOMM", 記憶體: 16, 類型: "創作", 儲存容量: "1000" },
+        { 型號: "ProArt P16 OLED(RTX4070+AI 9 HX 370)", 品牌: "ASUS", size: 16, CPU廠家: "AMD", 價格: 89900, GPU廠家: "NVIDIA", 記憶體: 32, 類型: "創作", 儲存容量: "2000" },
+        { 型號: "ProArt P16 OLED(RTX4070+AI 9 HX 370)", 品牌: "ASUS", size: 16, CPU廠家: "AMD", 價格: 109900, GPU廠家: "NVIDIA", 記憶體: 64, 類型: "創作", 儲存容量: "4000" },
+        { 型號: "ExpertBook B1(R7-7735U) ", 品牌: "ASUS", size: 15.6, CPU廠家: "AND", 價格: 33900, GPU廠家: "AMD", 記憶體: 16, 類型: "商用", 儲存容量: "1000" },
+        { 型號: "ExpertBook B1(Intel Core 5 120U)", 品牌: "ASUS", size: 14, CPU廠家: "INTEL", 價格: 33490, GPU廠家: "INTEL", 記憶體: 16, 類型: "商用", 儲存容量: "1000" },
+        { 型號: "ExpertBook B1(Intel Core 7 150U)", 品牌: "ASUS", size: 14, CPU廠家: "INTEL", 價格: 37490, GPU廠家: "INTEL", 記憶體: 16, 類型: "商用", 儲存容量: "1000" },
+        { 型號: "ExpertBook B1(R5-7535U)", 品牌: "ASUS", size: 15.6, CPU廠家: "AND", 價格: 29900, GPU廠家: "AMD", 記憶體: 16, 類型: "商用", 儲存容量: "1000" },
+        { 型號: "ExpertBook B1(I5-1235U)", 品牌: "ASUS", size: 14, CPU廠家: "INTEL", 價格: 25999, GPU廠家: "INTEL", 記憶體: 16, 類型: "商用", 儲存容量: "512" },
+        { 型號: "ExpertBook B1(I7-1355U)", 品牌: "ASUS", size: 14, CPU廠家: "INTEL", 價格: 29999, GPU廠家: "INTEL", 記憶體: 16, 類型: "商用", 儲存容量: "512" },
+        { 型號: "ExpertBook B3(RTX 2050+I7-1355U)", 品牌: "ASUS", size: 14, CPU廠家: "INTEL", 價格: 42900, GPU廠家: "NVIDIA", 記憶體: 16, 類型: "商用", 儲存容量: "1000" },
+        { 型號: "ExpertBook B3(RTX 2050+I5-1335U)", 品牌: "ASUS", size: 14, CPU廠家: "INTEL", 價格: 38900, GPU廠家: "NVIDIA", 記憶體: 16, 類型: "商用", 儲存容量: "1000" },
+        { 型號: "ExpertBook B3(Ultra 5 125U)", 品牌: "ASUS", size: 14, CPU廠家: "INTEL", 價格: 33900, GPU廠家: "INTEL", 記憶體: 16, 類型: "商用", 儲存容量: "512" },
+        { 型號: "ExpertBook B3(Ultra 7 155U)", 品牌: "ASUS", size: 16, CPU廠家: "INTEL", 價格: 37900, GPU廠家: "INTEL", 記憶體: 16, 類型: "商用", 儲存容量: "512" },
+        { 型號: "ExpertBook B3(Ultra 5 125U)", 品牌: "ASUS", size: 16, CPU廠家: "INTEL", 價格: 33900, GPU廠家: "INTEL", 記憶體: 16, 類型: "商用", 儲存容量: "512" },
+        { 型號: "ExpertBook B3(RTX 2050+I5-1335U)", 品牌: "ASUS", size: 16, CPU廠家: "INTEL", 價格: 38900, GPU廠家: "NVIDIA", 記憶體: 16, 類型: "商用", 儲存容量: "1000" },
+        { 型號: "ExpertBook B3(RTX 2050+I7-1355U)", 品牌: "ASUS", size: 16, CPU廠家: "INTEL", 價格: 42900, GPU廠家: "NVIDIA", 記憶體: 16, 類型: "商用", 儲存容量: "1000" },
+        { 型號: "ExpertBook B3(I5-1335U)", 品牌: "ASUS", size: 14, CPU廠家: "INTEL", 價格: 30900, GPU廠家: "INTEL", 記憶體: 8, 類型: "商用", 儲存容量: "512" },
+        { 型號: "ExpertBook B5(Arc A350M+I5-1340P)", 品牌: "ASUS", size: 16, CPU廠家: "INTEL", 價格: 44900, GPU廠家: "INTEL", 記憶體: 16, 類型: "商用", 儲存容量: "512" },
+        { 型號: "ExpertBook B5(Ultra 5 125H)", 品牌: "ASUS", size: 14, CPU廠家: "INTEL", 價格: 40900, GPU廠家: "INTEL", 記憶體: 16, 類型: "商用", 儲存容量: "512" },
+        { 型號: "ExpertBook B5(Ultra 5 125H)", 品牌: "ASUS", size: 16, CPU廠家: "INTEL", 價格: 41900, GPU廠家: "INTEL", 記憶體: 16, 類型: "商用", 儲存容量: "512" },
+        { 型號: "ExpertBook B6(A2000+I7-12850HX)", 品牌: "ASUS", size: 16, CPU廠家: "INTEL", 價格: 39999, GPU廠家: "NVIDIA", 記憶體: 32, 類型: "商用", 儲存容量: "1000" },
+        { 型號: "ExpertBook B6(A2000+I7-12850HX)", 品牌: "ASUS", size: 16, CPU廠家: "INTEL", 價格: 71900, GPU廠家: "NVIDIA", 記憶體: 64, 類型: "商用", 儲存容量: "2000" },
+        { 型號: "ExpertBook B7(I5-1340P)", 品牌: "ASUS", size: 14, CPU廠家: "INTEL", 價格: 44990, GPU廠家: "INTEL", 記憶體: 16, 類型: "商用", 儲存容量: "1000" },
+        { 型號: "ExpertBook B9(Intel Core 7 150U)", 品牌: "ASUS", size: 14, CPU廠家: "INTEL", 價格: 57900, GPU廠家: "INTEL", 記憶體: 32, 類型: "商用", 儲存容量: "1000" },
+        { 型號: "ExpertBook B9(Intel Core 7 150U)", 品牌: "ASUS", size: 14, CPU廠家: "INTEL", 價格: 66880, GPU廠家: "INTEL", 記憶體: 64, 類型: "商用", 儲存容量: "2000" },
+        { 型號: "ExpertBook B9(Intel Core 5 120U)", 品牌: "ASUS", size: 14, CPU廠家: "INTEL", 價格: 47990, GPU廠家: "INTEL", 記憶體: 16, 類型: "商用", 儲存容量: "1000" },
+        { 型號: "Swift Lite 14(I5-1334U)", 品牌: "ACER", size: 14, CPU廠家: "INTEL", 價格: 16688, GPU廠家: "INTEL", 記憶體: 8, 類型: "輕薄", 儲存容量: "512" },
+        { 型號: "Swift Lite 14(Ultra 5 115U)", 品牌: "ACER", size: 14, CPU廠家: "INTEL", 價格: 28900, GPU廠家: "INTEL", 記憶體: 32, 類型: "輕薄", 儲存容量: "512" },
+        { 型號: "Swift Lite 14(Ultra 5 115U)", 品牌: "ACER", size: 14, CPU廠家: "INTEL", 價格: 28900, GPU廠家: "INTEL", 記憶體: 32, 類型: "輕薄", 儲存容量: "512" },
+        { 型號: "Swift Lite 14 OLED(Ultra 5 115U)", 品牌: "ACER", size: 14, CPU廠家: "INTEL", 價格: 24900, GPU廠家: "INTEL", 記憶體: 16, 類型: "輕薄", 儲存容量: "512" },
+        { 型號: "Swift Lite 14(Ultra 5 115U)", 品牌: "ACER", size: 14, CPU廠家: "INTEL", 價格: 26900, GPU廠家: "INTEL", 記憶體: 16, 類型: "輕薄", 儲存容量: "512" },
+        { 型號: "Swift Lite 14(Ultra 7 155U)", 品牌: "ACER", size: 14, CPU廠家: "INTEL", 價格: 34900, GPU廠家: "INTEL", 記憶體: 32, 類型: "輕薄", 儲存容量: "512" },
+        { 型號: "Swift Edge 16 OLED(R5-7535U)", 品牌: "ACER", size: 16, CPU廠家: "AMD", 價格: 33900, GPU廠家: "AMD", 記憶體: 16, 類型: "輕薄", 儲存容量: "512" },
+        { 型號: "Swift Edge 16 OLED(R7-7735U)", 品牌: "ACER", size: 16, CPU廠家: "AMD", 價格: 37888, GPU廠家: "AMD", 記憶體: 16, 類型: "輕薄", 儲存容量: "512" },
+        { 型號: "Swift GO 14(Ultra 7 155H)", 品牌: "ACER", size: 14, CPU廠家: "INTEL", 價格: 31490, GPU廠家: "INTEL", 記憶體: 32, 類型: "輕薄", 儲存容量: "512" },
+        { 型號: "Swift GO 16(Ultra 7 155H)", 品牌: "ACER", size: 16, CPU廠家: "INTEL", 價格: 33900, GPU廠家: "INTEL", 記憶體: 16, 類型: "輕薄", 儲存容量: "512" },
+        { 型號: "Swift GO 16(Ultra 5 125H)", 品牌: "ACER", size: 16, CPU廠家: "INTEL", 價格: 27900, GPU廠家: "INTEL", 記憶體: 16, 類型: "輕薄", 儲存容量: "512" },
+        { 型號: "Swift GO 16 OLED(Ultra 7 155H)", 品牌: "ACER", size: 16, CPU廠家: "INTEL", 價格: 35900, GPU廠家: "INTEL", 記憶體: 16, 類型: "輕薄", 儲存容量: "512" },
+        { 型號: "Swift GO 16 OLED(Ultra 5 125H)", 品牌: "ACER", size: 16, CPU廠家: "INTEL", 價格: 29499, GPU廠家: "INTEL", 記憶體: 16, 類型: "輕薄", 儲存容量: "512" },
+        { 型號: "Swift GO 14(Ultra 5 125H)", 品牌: "ACER", size: 14, CPU廠家: "INTEL", 價格: 31900, GPU廠家: "INTEL", 記憶體: 32, 類型: "輕薄", 儲存容量: "512" },
+        { 型號: "Swift GO 14 OLED(Ultra 7 155H)", 品牌: "ACER", size: 14, CPU廠家: "INTEL", 價格: 35900, GPU廠家: "INTEL", 記憶體: 32, 類型: "輕薄", 儲存容量: "512" },
+        { 型號: "Swift GO 14 OLED(Ultra 7 155H)", 品牌: "ACER", size: 14, CPU廠家: "INTEL", 價格: 32900, GPU廠家: "INTEL", 記憶體: 16, 類型: "輕薄", 儲存容量: "512" },
+        { 型號: "Swift GO 14 OLED(Ultra 5 125H)", 品牌: "ACER", size: 14, CPU廠家: "INTEL", 價格: 29900, GPU廠家: "INTEL", 記憶體: 16, 類型: "輕薄", 儲存容量: "512" },
+        { 型號: "Swift X(RTX4050+I7-13700H)", 品牌: "ACER", size: 14.5, CPU廠家: "INTEL", 價格: 37900, GPU廠家: "NVIDIA", 記憶體: 32, 類型: "創作", 儲存容量: "512" },
+        { 型號: "Swift X(RTX4050+R7-7840HS)", 品牌: "ACER", size: 16, CPU廠家: "AMD", 價格: 48900, GPU廠家: "NVIDIA", 記憶體: 32, 類型: "創作", 儲存容量: "512" },
+        { 型號: "Swift X(RTX4050+Ultra 5 125H)", 品牌: "ACER", size: 14.5, CPU廠家: "INTEL", 價格: 44900, GPU廠家: "NVIDIA", 記憶體: 32, 類型: "創作", 儲存容量: "512" },
+        { 型號: "Swift X(RTX4050+Ultra 7 155H)", 品牌: "ACER", size: 14.5, CPU廠家: "INTEL", 價格: 47900, GPU廠家: "NVIDIA", 記憶體: 32, 類型: "創作", 儲存容量: "512" },
+        { 型號: "Swift X(RTX4060+Ultra 7 155H)", 品牌: "ACER", size: 14.5, CPU廠家: "INTEL", 價格: 47888, GPU廠家: "NVIDIA", 記憶體: 32, 類型: "創作", 儲存容量: "512" },
+        { 型號: "Swift X(RTX4050+I5-13500H)", 品牌: "ACER", size: 14.5, CPU廠家: "INTEL", 價格: 28999, GPU廠家: "NVIDIA", 記憶體: 16, 類型: "創作", 儲存容量: "512" },
+        { 型號: "Swift X(RTX4050+I5-13500H)", 品牌: "ACER", size: 14.5, CPU廠家: "INTEL", 價格: 33900, GPU廠家: "NVIDIA", 記憶體: 32, 類型: "創作", 儲存容量: "512" },
+        { 型號: "Swift X(RTX4070+Ultra 7 155H)", 品牌: "ACER", size: 14.5, CPU廠家: "INTEL", 價格: 56900, GPU廠家: "NVIDIA", 記憶體: 32, 類型: "創作", 儲存容量: "1000" },
+        { 型號: "Aspire Lite(Ultra 5 115U)", 品牌: "ACER", size: 16, CPU廠家: "INTEL", 價格: 19800, GPU廠家: "INTEL", 記憶體: 16, 類型: "輕薄", 儲存容量: "512" },
+        { 型號: "Aspire Lite(I5-1334U)", 品牌: "ACER", size: 14, CPU廠家: "INTEL", 價格: 17188, GPU廠家: "INTEL", 記憶體: 8, 類型: "輕薄", 儲存容量: "512" },
+        { 型號: "Aspire Lite(I5-1334U)", 品牌: "ACER", size: 16, CPU廠家: "INTEL", 價格: 18900, GPU廠家: "INTEL", 記憶體: 8, 類型: "輕薄", 儲存容量: "512" },
+        { 型號: "Aspire Lite(I3-1315U)", 品牌: "ACER", size: 16, CPU廠家: "INTEL", 價格: 15900, GPU廠家: "INTEL", 記憶體: 8, 類型: "輕薄", 儲存容量: "512" },
+        { 型號: "Aspire Lite(I3-N305)", 品牌: "ACER", size: 16, CPU廠家: "INTEL", 價格: 12688, GPU廠家: "INTEL", 記憶體: 8, 類型: "輕薄", 儲存容量: "512" },
+        { 型號: "Aspire Lite(I5-12450H)", 品牌: "ACER", size: 14, CPU廠家: "INTEL", 價格: 16888, GPU廠家: "INTEL", 記憶體: 8, 類型: "輕薄", 儲存容量: "512" },
+        { 型號: "Aspire Lite(I5-12500H)", 品牌: "ACER", size: 15.6, CPU廠家: "INTEL", 價格: 17888, GPU廠家: "INTEL", 記憶體: 8, 類型: "輕薄", 儲存容量: "512" },
+        { 型號: "Aspire Lite(R7-8840HS)", 品牌: "ACER", size: 15.6, CPU廠家: "AMD", 價格: 25900, GPU廠家: "AMD", 記憶體: 16, 類型: "輕薄", 儲存容量: "512" },
+        { 型號: "Aspire Go(I3-N305)", 品牌: "ACER", size: 15.6, CPU廠家: "INTEL", 價格: 13900, GPU廠家: "INTEL", 記憶體: 8, 類型: "一般", 儲存容量: "512" },
+        { 型號: "Aspire Go(I5-13420H)", 品牌: "ACER", size: 15.6, CPU廠家: "INTEL", 價格: 17688, GPU廠家: "INTEL", 記憶體: 8, 類型: "一般", 儲存容量: "512" },
+        { 型號: "Aspire 16(RTX2050+Intel Core 5 120U)", 品牌: "ACER", size: 16, CPU廠家: "INTEL", 價格: 23900, GPU廠家: "INTEL", 記憶體: 8, 類型: "一般", 儲存容量: "512" },
+        { 型號: "Aspire 3 Spin", 品牌: "ACER", size: 14, CPU廠家: "INTEL", 價格: 17900, GPU廠家: "INTEL", 記憶體: 8, 類型: "輕薄", 儲存容量: "512" },
+        { 型號: "Aspire 14(RTX2050+I5-13420H)", 品牌: "ACER", size: 14, CPU廠家: "INTEL", 價格: 23900, GPU廠家: "NVIDIA", 記憶體: 8, 類型: "一般", 儲存容量: "512" },
+        { 型號: "Aspire 14(Intel Core 5 120U)", 品牌: "ACER", size: 14, CPU廠家: "INTEL", 價格: 20900, GPU廠家: "INTEL", 記憶體: 16, 類型: "一般", 儲存容量: "512" },
+        { 型號: "Aspire Lite(Intel N100)", 品牌: "ACER", size: 14, CPU廠家: "INTEL", 價格: 10900, GPU廠家: "INTEL", 記憶體: 8, 類型: "輕薄", 儲存容量: "512" },
+        { 型號: "Aspire Lite(I7-12650H)", 品牌: "ACER", size: 14, CPU廠家: "INTEL", 價格: 21900, GPU廠家: "INTEL", 記憶體: 16, 類型: "輕薄", 儲存容量: "1000" },
+        { 型號: "Aspire Go(Processor N200)", 品牌: "ACER", size: 15.6, CPU廠家: "INTEL", 價格: 8888, GPU廠家: "INTEL", 記憶體: 4, 類型: "一般", 儲存容量: "256" },
+        { 型號: "Aspire 5(I7-13620H)", 品牌: "ACER", size: 15.6, CPU廠家: "INTEL", 價格: 23900, GPU廠家: "INTEL", 記憶體: 16, 類型: "一般", 儲存容量: "512" },
+        { 型號: "Aspire 5(RTX2050+I5-13420H)", 品牌: "ACER", size: 15.6, CPU廠家: "INTEL", 價格: 23900, GPU廠家: "NVIDIA", 記憶體: 8, 類型: "一般", 儲存容量: "512" },
+        { 型號: "Aspire 5(I5-13420H)", 品牌: "ACER", size: 15.6, CPU廠家: "INTEL", 價格: 18188, GPU廠家: "INTEL", 記憶體: 16, 類型: "一般", 儲存容量: "512" },
+        { 型號: "Aspire Lite(R7-5700U)", 品牌: "ACER", size: 15.6, CPU廠家: "AMD", 價格: 18900, GPU廠家: "AMD", 記憶體: 8, 類型: "輕薄", 儲存容量: "512" },
+        { 型號: "Aspire 5(Intel Core 5 120U)", 品牌: "ACER", size: 15.6, CPU廠家: "INTEL", 價格: 25900, GPU廠家: "INTEL", 記憶體: 16, 類型: "一般", 儲存容量: "1000" },
+        { 型號: "Aspire 5(Intel Core 3 100U)", 品牌: "ACER", size: 15.6, CPU廠家: "INTEL", 價格: 14900, GPU廠家: "INTEL", 記憶體: 8, 類型: "一般", 儲存容量: "512" },
+        { 型號: "Aspire 5(Intel Core 7 150U)", 品牌: "ACER", size: 15.6, CPU廠家: "INTEL", 價格: 25900, GPU廠家: "INTEL", 記憶體: 16, 類型: "一般", 儲存容量: "1000" },
+        { 型號: "Aspire 5(Intel Core 5 120U)", 品牌: "ACER", size: 15.6, CPU廠家: "INTEL", 價格: 17900, GPU廠家: "INTEL", 記憶體: 8, 類型: "一般", 儲存容量: "512" },
+        { 型號: "Aspire 5(R5-7535U)", 品牌: "ACER", size: 15.6, CPU廠家: "AMD", 價格: 18900, GPU廠家: "AMD", 記憶體: 16, 類型: "一般", 儲存容量: "512" },
+        { 型號: "Aspire 3(rocessor N200)", 品牌: "ACER", size: 17.3, CPU廠家: "INTEL", 價格: 14900, GPU廠家: "INTEL", 記憶體: 8, 類型: "一般", 儲存容量: "512" },
+        { 型號: "Aspire 5(I7-1355U)", 品牌: "ACER", size: 17.3, CPU廠家: "INTEL", 價格: 24900, GPU廠家: "INTEL", 記憶體: 16, 類型: "一般", 儲存容量: "512" },
+        { 型號: "Aspire 5(RTX2050+I5-1335U)", 品牌: "ACER", size: 17.3, CPU廠家: "INTEL", 價格: 23900, GPU廠家: "NVIDIA", 記憶體: 8, 類型: "一般", 儲存容量: "512" },
+        { 型號: "Aspire 5(I5-1335U)", 品牌: "ACER", size: 17.3, CPU廠家: "INTEL", 價格: 21900, GPU廠家: "INTEL", 記憶體: 16, 類型: "一般", 儲存容量: "512" },
+        { 型號: "Aspire 5(I3-1315U)", 品牌: "ACER", size: 17.3, CPU廠家: "INTEL", 價格: 17900, GPU廠家: "INTEL", 記憶體: 16, 類型: "一般", 儲存容量: "512" },
+        { 型號: "Helios Neo(RTX4050+I7-14700HX,165HZ)", 品牌: "ACER", size: 16, CPU廠家: "INTEL", 價格: 39999, GPU廠家: "NVIDIA", 記憶體: 16, 類型: "電競", 儲存容量: "512" },
+        { 型號: "Helios Neo(RTX4050+I5-14500HX,165HZ)", 品牌: "ACER", size: 16, CPU廠家: "INTEL", 價格: 36888, GPU廠家: "NVIDIA", 記憶體: 16, 類型: "電競", 儲存容量: "512" },
+        { 型號: "Predator(RTX4070+Ultra 9 185H)", 品牌: "ACER", size: 14.5, CPU廠家: "INTEL", 價格: 62999, GPU廠家: "NVIDIA", 記憶體: 32, 類型: "電競", 儲存容量: "1000" },
+        { 型號: "Helios Neo(RTX4060+I5-14500HX)", 品牌: "ACER", size: 16, CPU廠家: "INTEL", 價格: 37888, GPU廠家: "NVIDIA", 記憶體: 16, 類型: "電競", 儲存容量: "512" },
+        { 型號: "Helios Neo(RTX4050+I7-14700HX)", 品牌: "ACER", size: 16, CPU廠家: "INTEL", 價格: 45900, GPU廠家: "NVIDIA", 記憶體: 16, 類型: "電競", 儲存容量: "512" },
+        { 型號: "Helios Neo(RTX4060+I7-14700HX)", 品牌: "ACER", size: 16, CPU廠家: "INTEL", 價格: 46900, GPU廠家: "NVIDIA", 記憶體: 16, 類型: "電競", 儲存容量: "512" },
+        { 型號: "Helios Neo(RTX4060+I5-14500HX)", 品牌: "ACER", size: 16, CPU廠家: "INTEL", 價格: 42900, GPU廠家: "NVIDIA", 記憶體: 16, 類型: "電競", 儲存容量: "512" },
+        { 型號: "Helios Neo(RTX4060+I9-14900HX)", 品牌: "ACER", size: 16, CPU廠家: "INTEL", 價格: 47900, GPU廠家: "NVIDIA", 記憶體: 16, 類型: "電競", 儲存容量: "512" },
+        { 型號: "Triton Neo(RTX4050+Ultra 5 125H)", 品牌: "ACER", size: 16, CPU廠家: "INTEL", 價格: 42168, GPU廠家: "NVIDIA", 記憶體: 32, 類型: "電競", 儲存容量: "512" },
+        { 型號: "Triton Neo(RTX4060+Ultra 5 125H)", 品牌: "ACER", size: 16, CPU廠家: "INTEL", 價格: 45900, GPU廠家: "NVIDIA", 記憶體: 32, 類型: "電競", 儲存容量: "512" },
+        { 型號: "Triton Neo(RTX4060+Ultra 7 155H)", 品牌: "ACER", size: 16, CPU廠家: "INTEL", 價格: 49900, GPU廠家: "NVIDIA", 記憶體: 32, 類型: "電競", 儲存容量: "512" },
+        { 型號: "Triton Neo(RTX4070+Ultra 9 185H)", 品牌: "ACER", size: 16, CPU廠家: "INTEL", 價格: 60900, GPU廠家: "NVIDIA", 記憶體: 32, 類型: "電競", 儲存容量: "1000" },
+        { 型號: "Nitro Lite(RTX2050+I5-13420H)", 品牌: "ACER", size: 16, CPU廠家: "INTEL", 價格: 21900, GPU廠家: "NVIDIA", 記憶體: 8, 類型: "電競", 儲存容量: "512" }, 
+        { 型號: "Nitro Lite(RTX4050+I5-13420H)", 品牌: "ACER", size: 16, CPU廠家: "INTEL", 價格: 28900, GPU廠家: "NVIDIA", 記憶體:  16, 類型: "電競", 儲存容量: "512" },
+        { 型號: "Nitro Lite(RTX3050+I5-13420H)", 品牌: "ACER", size: 16, CPU廠家: "INTEL", 價格: 25900, GPU廠家: "NVIDIA", 記憶體: 8, 類型: "電競", 儲存容量: "512" },
+        { 型號: "Nitro V(RTX4060+I5-13420H)", 品牌: "ACER", size: 15.6, CPU廠家: "INTEL", 價格: 29688, GPU廠家: "NVIDIA", 記憶體: 16, 類型: "電競", 儲存容量: "512" },
+        { 型號: "Nitro V(RTX4050+R7-8845HS)", 品牌: "ACER", size: 16, CPU廠家: "AMD", 價格: 33900, GPU廠家: "NVIDIA", 記憶體: 16, 類型: "電競", 儲存容量: "512" },
+        { 型號: "Nitro V(RTX3050+R5-8645HS)", 品牌: "ACER", size: 16, CPU廠家: "AMD", 價格: 29900, GPU廠家: "NVIDIA", 記憶體: 16, 類型: "電競", 儲存容量: "512" },
+        { 型號: "Nitro V(RTX4060+R5-8645HS)", 品牌: "ACER", size: 16, CPU廠家: "AMD", 價格: 35900, GPU廠家: "NVIDIA", 記憶體: 16, 類型: "電競", 儲存容量: "512" },
+        { 型號: "Nitro V(RTX4050+I9-13900H)", 品牌: "ACER", size: 15.6, CPU廠家: "INTEL", 價格: 35900, GPU廠家: "NVIDIA", 記憶體: 16, 類型: "電競", 儲存容量: "512" },
+        { 型號: "Nitro V(RTX4050+R5-8645HS)", 品牌: "ACER", size: 14.5, CPU廠家: "AMD", 價格: 34900, GPU廠家: "NVIDIA", 記憶體: 16, 類型: "電競", 儲存容量: "512" },
+        { 型號: "Nitro V(RTX4060+I5-14450HX)", 品牌: "ACER", size: 16, CPU廠家: "INTEL", 價格: 34900, GPU廠家: "NVIDIA", 記憶體: 16, 類型: "電競", 儲存容量: "512" },
+        { 型號: "Nitro V(RTX4050+I5-13420H)", 品牌: "ACER", size: 15.6, CPU廠家: "INTEL", 價格: 28900, GPU廠家: "NVIDIA", 記憶體: 16, 類型: "電競", 儲存容量: "512" },
+        { 型號: "Nitro V(RTX3050+I5-13420H)", 品牌: "ACER", size: 15.6, CPU廠家: "INTEL", 價格: 29900, GPU廠家: "NVIDIA", 記憶體: 16, 類型: "電競", 儲存容量: "512" },
+        { 型號: "Nitro V(RTX4060+I9-13900H)", 品牌: "ACER", size: 15.6, CPU廠家: "INTEL", 價格: 36900, GPU廠家: "NVIDIA", 記憶體: 16, 類型: "電競", 儲存容量: "512" },
+        { 型號: "Nitro V(RTX4060+I9-13900H)", 品牌: "ACER", size: 15.6, CPU廠家: "INTEL", 價格: 37499, GPU廠家: "NVIDIA", 記憶體: 16, 類型: "電競", 儲存容量: "1000" },
+        { 型號: "Nitro V(RTX4060+R7-8845HS)", 品牌: "ACER", size: 16, CPU廠家: "AMD", 價格: 37900, GPU廠家: "NVIDIA", 記憶體: 16, 類型: "電競", 儲存容量: "512" },
+        { 型號: "Nitro V(RTX4060+I7-13700H)", 品牌: "ACER", size: 17.3, CPU廠家: "AMD", 價格: 41900, GPU廠家: "NVIDIA", 記憶體: 16, 類型: "電競", 儲存容量: "512" },
+        { 型號: "Nitro V(RTX4050+R5-8645HS)", 品牌: "ACER", size: 16, CPU廠家: "AMD", 價格: 31900, GPU廠家: "NVIDIA", 記憶體: 16, 類型: "電競", 儲存容量: "512" },
+        { 型號: "Extensa", 品牌: "ACER", size: 15.6, CPU廠家: "INTEL", 價格: 22900, GPU廠家: "INTEL", 記憶體: 16, 類型: "商用", 儲存容量: "512" },
+        { 型號: "TravelMate P2(RTX2050+I7-1355U)", 品牌: "ACER", size: 14, CPU廠家: "INTEL", 價格: 31900, GPU廠家: "NVIDIA", 記憶體: 8, 類型: "商用", 儲存容量: "512" },
+        { 型號: "TravelMate P2(RTX2050+I5-1335U)", 品牌: "ACER", size: 14, CPU廠家: "INTEL", 價格: 29900, GPU廠家: "NVIDIA", 記憶體: 8, 類型: "商用", 儲存容量: "512" },
+        { 型號: "TravelMate P2(I5-120U)", 品牌: "ACER", size: 14, CPU廠家: "INTEL", 價格: 29500, GPU廠家: "INTEL", 記憶體: 16, 類型: "商用", 儲存容量: "512" },
+        { 型號: "TravelMate P2(RTX2050+I5-1335U)", 品牌: "ACER", size: 16, CPU廠家: "INTEL", 價格: 29900, GPU廠家: "NVIDIA", 記憶體: 8, 類型: "商用", 儲存容量: "512" },
+        { 型號: "TravelMate P2(RTX2050+I7-1355U)", 品牌: "ACER", size: 16, CPU廠家: "INTEL", 價格: 32900, GPU廠家: "NVIDIA", 記憶體: 16, 類型: "商用", 儲存容量: "512" },
+        { 型號: "TravelMate P2(I5-1335U)", 品牌: "ACER", size: 16, CPU廠家: "INTEL", 價格: 28900, GPU廠家: "INTEL", 記憶體: 16, 類型: "商用", 儲存容量: "512" },
+        { 型號: "TravelMate P2(I7-1355U)", 品牌: "ACER", size: 16, CPU廠家: "INTEL", 價格: 32900, GPU廠家: "INTEL", 記憶體: 16, 類型: "商用", 儲存容量: "512" },
+        { 型號: "TravelMate P4(i7-1355U)", 品牌: "ACER", size: 14, CPU廠家: "INTEL", 價格: 33500, GPU廠家: "INTEL", 記憶體: 16, 類型: "商用", 儲存容量: "512" },
+        { 型號: "TravelMate P4(i5-1355U)", 品牌: "ACER", size: 14, CPU廠家: "INTEL", 價格: 32900, GPU廠家: "INTEL", 記憶體: 16, 類型: "商用", 儲存容量: "512" },
+        { 型號: "TravelMate P4(RTX2050+i7-1355U)", 品牌: "ACER", size: 14, CPU廠家: "INTEL", 價格: 48500, GPU廠家: "NVIDIA", 記憶體: 16, 類型: "商用", 儲存容量: "512" },
+        { 型號: "TravelMate P4(R5-8640U)", 品牌: "ACER", size: 14, CPU廠家: "AMD", 價格: 36900, GPU廠家: "AMD", 記憶體: 16, 類型: "商用", 儲存容量: "512" },
+        { 型號: "TravelMate P4(Ultra 7 155U)", 品牌: "ACER", size: 14, CPU廠家: "INTEL", 價格: 49500, GPU廠家: "INTEL", 記憶體: 16, 類型: "商用", 儲存容量: "512" },
+        { 型號: "TravelMate P4(Ultra 5 125U)", 品牌: "ACER", size: 14, CPU廠家: "INTEL", 價格: 36900, GPU廠家: "INTEL", 記憶體: 16, 類型: "商用", 儲存容量: "512" },
+        { 型號: "TravelMate P4(i7-1260P)", 品牌: "ACER", size: 16, CPU廠家: "INTEL", 價格: 28900, GPU廠家: "INTEL", 記憶體: 16, 類型: "商用", 儲存容量: "512" },
+        { 型號: "TravelMate P4(Ultra 7 155U)", 品牌: "ACER", size: 16, CPU廠家: "INTEL", 價格: 46900, GPU廠家: "INTEL", 記憶體: 16, 類型: "商用", 儲存容量: "512" },
+        { 型號: "TravelMate P4(Ultra 5 125U)", 品牌: "ACER", size: 16, CPU廠家: "INTEL", 價格: 42900, GPU廠家: "INTEL", 記憶體: 16, 類型: "商用", 儲存容量: "512" },
+        { 型號: "TravelMate P6(i7-1355U)", 品牌: "ACER", size: 14, CPU廠家: "INTEL", 價格: 43900, GPU廠家: "INTEL", 記憶體: 16, 類型: "商用", 儲存容量: "1000" },
+        { 型號: "TravelMate P6(i5-1355U)", 品牌: "ACER", size: 14, CPU廠家: "INTEL", 價格: 39900, GPU廠家: "INTEL", 記憶體: 16, 類型: "商用", 儲存容量: "1000" },
+        { 型號: "TravelMate P6(Ultra 7 155U)", 品牌: "ACER", size: 14, CPU廠家: "INTEL", 價格: 49500, GPU廠家: "INTEL", 記憶體: 16, 類型: "商用", 儲存容量: "1000" },
+        { 型號: "TravelMate P6(Ultra 5 125U)", 品牌: "ACER", size: 14, CPU廠家: "INTEL", 價格: 49500, GPU廠家: "INTEL", 記憶體: 16, 類型: "商用", 儲存容量: "1000" },
+        { 型號: "Titan 18(RTX5080+Ultra 9 285HX)", 品牌: "MSI", size: 18, CPU廠家: "INTEL", 價格: 154900, GPU廠家: "NVIDIA", 記憶體: 64, 類型: "電競", 儲存容量: "6000" },
+        { 型號: "Titan 18(RTX5090+Ultra 9 285HX)", 品牌: "MSI", size: 18, CPU廠家: "INTEL", 價格: 194900, GPU廠家: "NVIDIA", 記憶體: 96, 類型: "電競", 儲存容量: "6000" },
+        { 型號: "Stealth 16(RTX4070+Ultra 9 185H)", 品牌: "MSI", size: 16, CPU廠家: "INTEL", 價格: 72900, GPU廠家: "NVIDIA", 記憶體: 32, 類型: "電競", 儲存容量: "2000" },
+        { 型號: "Stealth A16(RTX5080+AI 9 370)", 品牌: "MSI", size: 16, CPU廠家: "AMD", 價格: 99900, GPU廠家: "NVIDIA", 記憶體: 32, 類型: "電競", 儲存容量: "2000" },
+        { 型號: "Stealth 14(RTX4060+Ultra 7 155H)", 品牌: "MSI", size: 14, CPU廠家: "INTEL", 價格: 59900, GPU廠家: "NVIDIA", 記憶體: 32, 類型: "電競", 儲存容量: "1000" },
+        { 型號: "Stealth 16(RTX4080+Ultra 7 155H)", 品牌: "MSI", size: 16, CPU廠家: "INTEL", 價格: 65900, GPU廠家: "NVIDIA", 記憶體: 32, 類型: "電競", 儲存容量: "1000" },
+        { 型號: "Stealth 18 MercedesAMG(RTX4080+Ultra 9 185H)", 品牌: "MSI", size: 18, CPU廠家: "INTEL", 價格: 110900, GPU廠家: "NVIDIA", 記憶體: 64, 類型: "電競", 儲存容量: "2000" },
+        { 型號: "Stealth 16 MercedesAMG(RTX4070+Ultra 9 185H)", 品牌: "MSI", size: 16, CPU廠家: "INTEL", 價格: 78900, GPU廠家: "NVIDIA", 記憶體: 32, 類型: "電競", 儲存容量: "2000" },
+        { 型號: "Stealth A16(RTX4060+AI 9 365)", 品牌: "MSI", size: 16, CPU廠家: "AMD", 價格: 59900, GPU廠家: "NVIDIA", 記憶體: 32, 類型: "電競", 儲存容量: "1000" },
+        { 型號: "Stealth 14 AI Studio(RTX4060+Ultra 7 155H)", 品牌: "MSI", size: 14, CPU廠家: "INTEL", 價格: 62502, GPU廠家: "NVIDIA", 記憶體: 32, 類型: "電競", 儲存容量: "1000" },
+        { 型號: "Raider(RTX4080+i9-14900HX)", 品牌: "MSI", size: 17, CPU廠家: "INTEL", 價格: 89900, GPU廠家: "NVIDIA", 記憶體: 32, 類型: "電競", 儲存容量: "1000" },
+        { 型號: "Raider A18(RTX5090+R9-9955HX3D)", 品牌: "MSI", size: 18, CPU廠家: "AMD", 價格: 149900, GPU廠家: "NVIDIA", 記憶體: 64, 類型: "電競", 儲存容量: "2000" },
+        { 型號: "Raider A18(RTX5080+Ultra 9 285HX)", 品牌: "MSI", size: 18, CPU廠家: "INTEL", 價格: 137900, GPU廠家: "NVIDIA", 記憶體: 64, 類型: "電競", 儲存容量: "4000" },
+        { 型號: "Vector 16(RTX 5080+Ultra 9 275HX)", 品牌: "MSI", size: 16, CPU廠家: "INTEL", 價格: 78999, GPU廠家: "NVIDIA", 記憶體: 16, 類型: "電競", 儲存容量: "1000" },
+        { 型號: "Vector 16(RTX4080+i7-14650HX)", 品牌: "MSI", size: 16, CPU廠家: "INTEL", 價格: 59999, GPU廠家: "NVIDIA", 記憶體: 16, 類型: "電競", 儲存容量: "1000" },
+        { 型號: "Vector 17(RTX4080+i9-14900HX)", 品牌: "MSI", size: 17, CPU廠家: "INTEL", 價格: 77500, GPU廠家: "NVIDIA", 記憶體: 32, 類型: "電競", 儲存容量: "1000" },
+        { 型號: "Sword 16(RTX4060+i7-14650HX)", 品牌: "MSI", size: 16, CPU廠家: "INTEL", 價格: 39900, GPU廠家: "NVIDIA", 記憶體: 16, 類型: "電競", 儲存容量: "512" },
+        { 型號: "Katana 15(RTX4060+i7-13620H)", 品牌: "MSI", size: 15.6, CPU廠家: "INTEL", 價格: 38900, GPU廠家: "NVIDIA", 記憶體: 16, 類型: "電競", 儲存容量: "1000" },
+        { 型號: "Katana 17(RTX 3050+i5-13420H)", 品牌: "MSI", size: 17, CPU廠家: "INTEL", 價格: 26900, GPU廠家: "NVIDIA", 記憶體: 16, 類型: "電競", 儲存容量: "512" },
+        { 型號: "Katana 15(RTX4060+i5-13420H)", 品牌: "MSI", size: 15.6, CPU廠家: "INTEL", 價格: 33500, GPU廠家: "NVIDIA", 記憶體: 16, 類型: "電競", 儲存容量: "1000" },
+        { 型號: "Katana A17(RTX 4050+R7-8845HS)", 品牌: "MSI", size: 17, CPU廠家: "AMD", 價格: 35500, GPU廠家: "NVIDIA", 記憶體: 16, 類型: "電競", 儲存容量: "1000" },
+        { 型號: "Katana A15(RTX 4060+R7-8845HS)", 品牌: "MSI", size: 15.6, CPU廠家: "AMD", 價格: 36500, GPU廠家: "NVIDIA", 記憶體: 16, 類型: "電競", 儲存容量: "1000" },
+        { 型號: "Sword 17(RTX 4050+I7-14700HX)", 品牌: "MSI", size: 17, CPU廠家: "INTEL", 價格: 40500, GPU廠家: "NVIDIA", 記憶體: 16, 類型: "電競", 儲存容量: "1000" },
+        { 型號: "Pulse 17(RTX 4070+Ultra 9 185H)", 品牌: "MSI", size: 17, CPU廠家: "INTEL", 價格: 54900, GPU廠家: "NVIDIA", 記憶體: 16, 類型: "電競", 儲存容量: "1000" },
+        { 型號: "Pulse 16(RTX 4060+Ultra 9 185H)", 品牌: "MSI", size: 16, CPU廠家: "INTEL", 價格: 42900, GPU廠家: "NVIDIA", 記憶體: 16, 類型: "電競", 儲存容量: "1000" },
+        { 型號: "Crosshair 17(RTX 4060+i7-14700HX)", 品牌: "MSI", size: 17, CPU廠家: "INTEL", 價格: 53499, GPU廠家: "NVIDIA", 記憶體: 16, 類型: "電競", 儲存容量: "1000" },
+        { 型號: "Thin 15(RTX3050+i7-13620H)", 品牌: "MSI", size: 15.6, CPU廠家: "INTEL", 價格: 27490, GPU廠家: "NVIDIA", 記憶體: 16, 類型: "電競", 儲存容量: "512" },
+        { 型號: "Thin 15(RTX3050+i5-13420H)", 品牌: "MSI", size: 15.6, CPU廠家: "INTEL", 價格: 23800, GPU廠家: "NVIDIA", 記憶體: 8, 類型: "電競", 儲存容量: "512" },
+        { 型號: "Thin 15(RTX3050+i5-12450H)", 品牌: "MSI", size: 15.6, CPU廠家: "INTEL", 價格: 21334, GPU廠家: "NVIDIA", 記憶體: 8, 類型: "電競", 儲存容量: "512" },
+        { 型號: "Thin 15(RTX2050+i7-13620H)", 品牌: "MSI", size: 15.6, CPU廠家: "INTEL", 價格: 24990, GPU廠家: "NVIDIA", 記憶體: 8, 類型: "電競", 儲存容量: "512" },
+        { 型號: "Cyborg 14(RTX 4060+i7-13620H)", 品牌: "MSI", size: 14, CPU廠家: "INTEL", 價格: 34500, GPU廠家: "NVIDIA", 記憶體: 16, 類型: "電競", 儲存容量: "512" },
+        { 型號: "Cyborg 15(RTX 4060+i7-13620H)", 品牌: "MSI", size: 15.6, CPU廠家: "INTEL", 價格: 32788, GPU廠家: "NVIDIA", 記憶體: 16, 類型: "電競", 儲存容量: "512" },
+        { 型號: "Cyborg 15(RTX 4060+i5-13420H)", 品牌: "MSI", size: 15.6, CPU廠家: "INTEL", 價格: 32500, GPU廠家: "NVIDIA", 記憶體: 16, 類型: "電競", 儲存容量: "512" },
+        { 型號: "Cyborg 15(RTX 4050+Ultra 7 155H)", 品牌: "MSI", size: 15.6, CPU廠家: "INTEL", 價格: 32900, GPU廠家: "NVIDIA", 記憶體: 16, 類型: "電競", 儲存容量: "1000" },
+        { 型號: "CreatorPro X18(RTX 5000+i9-14900HX)", 品牌: "MSI", size: 18, CPU廠家: "INTEL", 價格: 181900, GPU廠家: "NVIDIA", 記憶體: 64, 類型: "創作", 儲存容量: "4000" },
+        { 型號: "Workstation WS76(RTX A3000+i9-11900H)", 品牌: "MSI", size: 17.3, CPU廠家: "INTEL", 價格: 81500, GPU廠家: "NVIDIA", 記憶體: 32, 類型: "創作", 儲存容量: "2000" },
+        { 型號: "CreatorPro Z17(RTX A3000+i9-13950HX)", 品牌: "MSI", size: 17, CPU廠家: "INTEL", 價格: 96900, GPU廠家: "NVIDIA", 記憶體: 32, 類型: "創作", 儲存容量: "1000" },
+        { 型號: "CreatorPro M16(RTX A1000+i7-14700HX)", 品牌: "MSI", size: 16, CPU廠家: "INTEL", 價格: 58900, GPU廠家: "NVIDIA", 記憶體: 32, 類型: "創作", 儲存容量: "1000" },
+        { 型號: "Creator A16(RTX4070+ AI 9 HX 370)", 品牌: "MSI", size: 16, CPU廠家: "AMD", 價格: 80900, GPU廠家: "NVIDIA", 記憶體: 32, 類型: "創作", 儲存容量: "2000" },
+        { 型號: "Creator Z16(RTX 4060+i9-13980HX)", 品牌: "MSI", size: 16, CPU廠家: "INTEL", 價格: 59900, GPU廠家: "NVIDIA", 記憶體: 32, 類型: "創作", 儲存容量: "1000" },
+        { 型號: "Summit E16(RTX 4050+Ultra 7 155H)", 品牌: "MSI", size: 16, CPU廠家: "INTEL", 價格: 54900, GPU廠家: "NVIDIA", 記憶體: 32, 類型: "一般", 儲存容量: "1000" },
+        { 型號: "Summit E13(Ultra 5 125H)", 品牌: "MSI", size: 13.3, CPU廠家: "INTEL", 價格: 34900, GPU廠家: "INTEL", 記憶體: 16, 類型: "輕薄", 儲存容量: "1000" },
+        { 型號: "Summit A16(AI 9 365)", 品牌: "MSI", size: 16, CPU廠家: "AMD", 價格: 54900, GPU廠家: "AMD", 記憶體: 32, 類型: "輕薄", 儲存容量: "1000" },
+        { 型號: "Prestige 14(Ultra 5 125H)", 品牌: "MSI", size: 14, CPU廠家: "INTEL", 價格: 28500, GPU廠家: "INTEL", 記憶體: 32, 類型: "輕薄", 儲存容量: "2000" },
+        { 型號: "Prestige 16(RTX 4050+Ultra 7 155H)", 品牌: "MSI", size: 16, CPU廠家: "INTEL", 價格: 43900, GPU廠家: "NVIDIA", 記憶體: 32, 類型: "商用", 儲存容量: "512" },
+        { 型號: "Prestige 16(RTX 4070+Ultra 9 185H)", 品牌: "MSI", size: 16, CPU廠家: "INTEL", 價格: 74900, GPU廠家: "NVIDIA", 記憶體: 32, 類型: "商用", 儲存容量: "2000" },
+        { 型號: "Prestige 16(AI 9 365)", 品牌: "MSI", size: 16, CPU廠家: "AMD", 價格: 47900, GPU廠家: "AMD", 記憶體: 32, 類型: "商用", 儲存容量: "1000" },
+        { 型號: "Modern 15(Intel Core 7 150U)", 品牌: "MSI", size: 15.6, CPU廠家: "INTEL", 價格: 22999, GPU廠家: "INTEL", 記憶體: 16, 類型: "商用", 儲存容量: "1000" },
+        { 型號: "Modern 14(i3-1315U)", 品牌: "MSI", size: 14, CPU廠家: "INTEL", 價格: 14500, GPU廠家: "INTEL", 記憶體: 8, 類型: "商用", 儲存容量: "512" },
+        { 型號: "Modern 15(i7-1355U)", 品牌: "MSI", size: 15.6, CPU廠家: "INTEL", 價格: 21900, GPU廠家: "INTEL", 記憶體: 16, 類型: "商用", 儲存容量: "512" },
+        { 型號: "Modern 15(i5-13420H)", 品牌: "MSI", size: 15.6, CPU廠家: "INTEL", 價格: 17900, GPU廠家: "INTEL", 記憶體: 8, 類型: "商用", 儲存容量: "512" },
+        { 型號: "Commercial 14(i5-13420H)", 品牌: "MSI", size: 14, CPU廠家: "INTEL", 價格: 32900, GPU廠家: "INTEL", 記憶體: 8, 類型: "商用", 儲存容量: "512" },
+        { 型號: "Modern 15(i9-13900H)", 品牌: "MSI", size: 15.6, CPU廠家: "INTEL", 價格: 26900, GPU廠家: "INTEL", 記憶體: 16, 類型: "商用", 儲存容量: "1000" },
+        { 型號: "Modern 13(Intel Core 7 150U)", 品牌: "MSI", size: 13.3, CPU廠家: "INTEL", 價格: 23500, GPU廠家: "INTEL", 記憶體: 16, 類型: "商用", 儲存容量: "1000" },
+        { 型號: "Modern 14(i5-1335U)", 品牌: "MSI", size: 14, CPU廠家: "INTEL", 價格: 18900, GPU廠家: "INTEL", 記憶體: 16, 類型: "商用", 儲存容量: "512" },
+        { 型號: "Modern 15(i5-1335U)", 品牌: "MSI", size: 15.6, CPU廠家: "INTEL", 價格: 20900, GPU廠家: "INTEL", 記憶體: 16, 類型: "商用", 儲存容量: "512" },   
+        { 型號: "Modern 15(i5-1334U)", 品牌: "MSI", size: 15.6, CPU廠家: "INTEL", 價格: 17999, GPU廠家: "INTEL", 記憶體: 16, 類型: "商用", 儲存容量: "512" }, 
+        { 型號: "Modern 14(i5-13420H)", 品牌: "MSI", size: 14, CPU廠家: "INTEL", 價格: 19900, GPU廠家: "INTEL", 記憶體: 16, 類型: "商用", 儲存容量: "512" },
+        ];
+
+        function calculateScore(laptop, requirements, weights) {
+            let score = 0;
+
+        // 尺寸匹配計算
+        const laptopSize = laptop.size;
+        const minSize = requirements.size[0];
+        const maxSize = requirements.size[1];
+
+        if (laptopSize >= minSize && laptopSize <= maxSize) {
+            score += weights.size; // 滿分
+        } else {
+            const sizeDifference = Math.min(
+                Math.abs(laptopSize - minSize),
+                Math.abs(laptopSize - maxSize)
+            );
+            score += weights.size * Math.max(0, 1 - sizeDifference / maxSize);
+        }   
+
+        score += weights.CPU廠家 * (laptop.CPU廠家 === requirements.CPU廠家 ? 1 : 0);
+        score += weights.品牌 * (laptop.品牌 === requirements.品牌 ? 1 : 0);
+        score += weights.價格 * Math.max(0, 1 - Math.abs(laptop.價格 - ((requirements.價格範圍[0] + requirements.價格範圍[1]) / 2)) / ((requirements.價格範圍[0] + requirements.價格範圍[1]) / 2));
+        score += weights.GPU廠家 * (laptop.GPU廠家 === requirements.GPU廠家 ? 1 : 0);
+        score += weights.記憶體 * Math.max(0, 1 - Math.abs(laptop.記憶體 - requirements.記憶體) / requirements.記憶體);
+        score += weights.類型 * (laptop.類型 === requirements.類型 ? 1 : 0);
+        score += weights.儲存容量 * (laptop.儲存容量 === requirements.儲存容量 ? 1 : 0);
+
+        return score;
+    }
+
+        function recommendLaptops(event) {
+        event.preventDefault();
+
+        const sizeRange = document.getElementById("size").value.split('-').map(Number);
+
+        const requirements = {
+            品牌: document.getElementById("brand").value,
+            size: sizeRange, // 解析成範圍
+            CPU廠家: document.getElementById("cpu-manufacturer").value,
+            價格範圍: document.getElementById("price").value.split('-').map(Number),
+            GPU廠家: document.getElementById("gpu-manufacturer").value,
+            記憶體: parseInt(document.getElementById("memory").value, 10),
+            類型: document.getElementById("type").value,
+            儲存容量: document.getElementById("storage").value
+        };
+
+        const weights = {
+            品牌: parseInt(document.getElementById("brand-weight").value, 10),
+            size: parseInt(document.getElementById("size-weight").value, 10),
+            CPU廠家: parseInt(document.getElementById("cpu-weight").value, 10),
+            價格: parseInt(document.getElementById("price-weight").value, 10),
+            GPU廠家: parseInt(document.getElementById("gpu-weight").value, 10),
+            記憶體: parseInt(document.getElementById("memory-weight").value, 10),
+            類型: parseInt(document.getElementById("type-weight").value, 10),
+            儲存容量: parseInt(document.getElementById("storage-weight").value, 10)
+        };
+
+        Object.keys(weights).forEach(key => {
+            if (isNaN(weights[key])) {
+                weights[key] = 1;
+            }
+        });
+
+        if (!Array.isArray(laptops) || laptops.length === 0) {
+            alert("沒有可推薦的筆電數據");
+            return;
+     }
+
+        laptops.forEach(laptop => {
+            laptop.score = calculateScore(laptop, requirements, weights);
+        });
+
+        laptops.sort((a, b) => b.score - a.score);
+
+        const recommendations = laptops.slice(0, 10);
+        displayRecommendations(recommendations);
+    }   
+
+
+        function displayRecommendations(recommendations) {
+            const tableBody = document.getElementById("recommendations");
+            tableBody.innerHTML = "";
+
+            recommendations.forEach(laptop => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${laptop.型號}</td>
+                    <td>${laptop.品牌}</td>
+                    <td>${laptop.size}</td>
+                    <td>${laptop.CPU廠家}</td>
+                    <td>${laptop.GPU廠家}</td>
+                    <td>${laptop.儲存容量}</td>
+                    <td>${laptop.記憶體}</td>
+                    <td>${laptop.類型}</td>
+                    <td>${laptop.價格}</td>
+                    
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>筆電推薦系統</h1>
+        <form method="POST" action="">
+            <label for="size">尺寸：</label>
+            <select id="size" name="size">
+                <option value="0-12.9">13寸以下</option>
+                <option value="13-14.9">14寸</option>
+                <option value="15-15.9">15寸</option>
+                <option value="16-999">16寸以上</option>
+            </select>
+            <label for="size-weight">尺寸 看中程度：</label>
+            <select id="size-weight" name="size-weight">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="none">None</option>
+            </select><br>
+
+            <label for="brand">品牌挑選：</label>
+            <select id="brand" name="brand">
+                <option value="ASUS">ASUS</option>
+                <option value="ACER">ACER</option>
+                <option value="HP">HP</option>
+                <option value="MSI">MSI</option>
+                <option value="DELL">DELL</option>
+                <option value="Lenovo">Lenovo</option>
+                <option value="GIGABYTE">GIGABYTE</option>
+                <option value="none">None</option>
+            </select>
+            <label for="brand-weight">品牌 看中程度：</label>
+            <select id="brand-weight" name="brand-weight">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="none">None</option>
+            </select><br>
+
+            <label for="cpu-manufacturer">CPU(處理器) 廠家：</label>
+            <select id="cpu-manufacturer" name="cpu-manufacturer">
+                <option value="INTEL">INTEL</option>
+                <option value="AMD">AMD</option>
+                <option value="QUALCOMM">QUALCOMM</option>
+                <option value="none">None</option>
+            </select>
+            <label for="cpu-weight">CPU(處理器) 看中程度：</label>
+            <select id="cpu-weight" name="cpu-weight">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="none">None</option>
+            </select><br>
+
+            <label for="gpu-manufacturer">GPU(顯示卡) 廠家：</label>
+            <select id="gpu-manufacturer" name="gpu-manufacturer">
+                <option value="NVIDIA">NVIDIA</option>
+                <option value="AMD">AMD</option>
+                <option value="INTEL">INTEL</option>
+                <option value="QUALCOMM">QUALCOMM</option>
+                <option value="none">None</option>
+            </select>
+            <label for="gpu-weight">GPU(顯示卡) 看中程度：</label>
+            <select id="gpu-weight" name="gpu-weight">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="none">None</option>
+            </select><br>
+
+            <label for="storage">儲存容量：</label>
+            <select id="storage" name="storage">
+                <option value="256">256G</option>
+                <option value="512">512G</option>
+                <option value="1000">1T</option>
+                <option value="2000">2T</option>
+                <option value="none">None</option>
+            </select>
+            <label for="storage-weight">儲存容量 看中程度：</label>
+            <select id="storage-weight" name="storage-weight">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="none">None</option>
+            </select><br>
+
+            <label for="memory">記憶體：</label>
+            <select id="memory" name="memory">
+                <option value="8">8G</option>
+                <option value="16">16G</option>
+                <option value="32">32G</option>
+                <option value="64">64G</option>
+                <option value="none">None</option>
+            </select>
+            <label for="memory-weight">記憶體 看中程度：</label>
+            <select id="memory-weight" name="memory-weight">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="none">None</option>
+            </select><br>
+
+            <label for="type">類型：</label>
+            <select id="type" name="type">
+                <option value="輕薄">輕薄</option>
+                <option value="電競">電競</option>
+                <option value="商用">商用</option>
+                <option value="一般">一般</option>
+                <option value="創作">創作</option>
+                <option value="none">None</option>
+            </select>
+            <label for="type-weight">類型 看中程度：</label>
+            <select id="type-weight" name="type-weight">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="none">None</option>
+            </select><br>
+
+            <label for="price">價格：</label>
+            <select id="price" name="price">
+                <option value="0-10000">萬元以下</option>
+                <option value="10000-15000">1萬-1.5萬</option>
+                <option value="15000-25000">1.5萬-2.5萬</option>
+                <option value="25000-30000">2.5萬-3萬</option>
+                <option value="30000-999999">3萬以上</option>
+            </select>
+            <label for="price-weight">價格 看中程度：</label>
+            <select id="price-weight" name="price-weight">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="none">None</option>
+            </select><br>
+        </form>
+        <form onsubmit="recommendLaptops(event)">
+            <!-- 表单字段省略 -->
+            <input type="submit" value="提交">
+        </form>
+
+        <h2>推薦的筆電如下：</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>型號</th>
+                    <th>品牌</th>
+                    <th>尺寸</th>
+                    <th>CPU廠家</th>
+                    <th>GPU廠家</th>
+                    <th>儲存容量</th>
+                    <th>記憶體</th>
+                    <th>類型</th>
+                    <th>價格</th>
+                </tr>
+            </thead>
+            <tbody id="recommendations"></tbody>
+        </table>
+    </div>
+</body>
+</html>
